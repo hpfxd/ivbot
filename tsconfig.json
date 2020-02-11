@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "target": "ES6",
+        "module": "commonjs",
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceRoot": "./src/",
+        "rootDir": "./src/",
+        "outDir": "./dist/",
+        "inlineSourceMap": true,
+        "typeRoots": ["node_modules/@types", "types"]
+    }
+}

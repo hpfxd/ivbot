@@ -1,0 +1,15 @@
+diff --git a/node_modules/prismarine-tokens/libs/tokens-use.js b/node_modules/prismarine-tokens/libs/tokens-use.js
+index 84e6060..c461fa6 100644
+--- a/node_modules/prismarine-tokens/libs/tokens-use.js
++++ b/node_modules/prismarine-tokens/libs/tokens-use.js
+@@ -82,8 +82,8 @@ module.exports = (_opt, _cb) => {
+         return resetTokens();
+ //----If we already have a session
+       } else {
+-        yggdrasil.validate(options.session.accessToken, function(_ok) {
+-          if (_ok) { //Session is ok
++        yggdrasil.validate(options.session.accessToken, function(_err1) {
++          if (!_err1) { //Session is ok
+             debug('accessToken still ok !');
+             return finish();
+           } else { //Session is outdated, try to refresh it
