@@ -1,6 +1,7 @@
 import { Sequelize, Model, DataTypes } from "sequelize";
+import { config } from "./index";
 
-export const sequelize = new Sequelize("sqlite:iv.sqlite");
+export const sequelize = new Sequelize(config["databaseUrl"]);
 
 export class User extends Model {
     public id!: number;
