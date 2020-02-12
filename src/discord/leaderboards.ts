@@ -46,7 +46,7 @@ export default class Leaderboards {
         console.log("Setting up leaderboards");
         this.setupLeaderboards();
 
-        schedule.scheduleJob("0 * * * *", this.updateLeaderboards);
+        schedule.scheduleJob("0 * * * *", () => this.updateLeaderboards());
     }
 
     async updateLeaderboards(): Promise<null> {
