@@ -8,6 +8,7 @@ import Api from "../api";
 import * as db from "../db";
 import { Op } from "sequelize";
 import schedule from "node-schedule";
+import Leaderboards from "./leaderboards";
 
 export const codes: {
     user: Discord.GuildMember;
@@ -56,7 +57,8 @@ export default class DiscordBot {
 
                     const player = await api.getPlayer(member.minecraftId);
                     if (player.name !== member.minecraftName) {
-                        await dm.setNickname(player.name, "Name changed. (" + member.minecraftName + ")");
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        await dm.setNickname(player.name, "Name changed. (" + member.minecraftName + ")").catch(() => {});
 
                         member.minecraftName = player.name;
                         member.save();
@@ -110,6 +112,8 @@ export default class DiscordBot {
             });
             this.log("Logged in as " + this.client.user.tag);
             this.guild = this.client.guilds.find(c => c.name === "InfiniteVoid");
+            
+            new Leaderboards(this.api, this.guild.channels.get(iv.config["discord"]["leaderboards"]["channel"]) as Discord.TextChannel);
         });
 
         this.client.on("message", (msg) => {

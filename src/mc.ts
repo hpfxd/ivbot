@@ -39,7 +39,7 @@ export default class Bot {
             d1.setDate(d1.getDate() - 3);
 
             for (const member of guild.members) {
-                db.ExperienceHistory.create({ // select minecraftId, experience, sum(experience) from experienceHistory group by minecraftId
+                db.ExperienceHistory.create({
                     minecraftId: member.id,
                     experience: member.dailyExperienceHistory[0]
                 });
