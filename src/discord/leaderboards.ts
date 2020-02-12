@@ -27,7 +27,7 @@ class Leaderboard {
         }[] = await this.updater(guild);
 
         for (const user of result) {
-            embed.addField(`**#${result.indexOf(user) + 1}** ${user.name}`, user.value.toLocaleString(), false);
+            embed.addField(`**#${result.indexOf(user) + 1}** ${user.name.replace(/([*_~])/g, "\\$1")}`, user.value.toLocaleString(), false);
         }
 
         return await this.message.edit("_ _", embed);
@@ -92,7 +92,7 @@ export default class Leaderboards {
                 });
             }
 
-            res.sort((a, b) => a.value - b.value);
+            res.sort((a, b) => b.value - a.value);
             res.splice(10, res.length);
 
             const result = [];
@@ -118,7 +118,7 @@ export default class Leaderboards {
                 });
             }
 
-            res.sort((a, b) => a.value - b.value);
+            res.sort((a, b) => b.value - a.value);
             res.splice(10, res.length);
 
             const result = [];

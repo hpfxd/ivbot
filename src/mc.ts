@@ -159,17 +159,17 @@ export default class Bot {
                     this.bot.chat(`/gc [${md5(name).substr(0, 5)}] Welcome to the guild, ${name}! /g discord`);
                     return null;
                 });
-                iv.discordbot.webhookClient.send(`**${name}** has joined the guild!`);
+                iv.discordbot.webhookClient.send(`**${name.replace(/([*_~])/g, "\\$1")}** has joined the guild!`);
             });
 
             this.bot.on("guild:kick", (name: string, by: string) => {
                 this.blacklisted.push(name);
-                iv.discordbot.webhookClient.send(`**${name}** was kicked from the guild by **${by}**`);
+                iv.discordbot.webhookClient.send(`**${name.replace(/([*_~])/g, "\\$1")}** was kicked from the guild by **${by}**`);
             });
 
             this.bot.on("guild:leave", (name: string) => {
                 this.blacklisted.push(name);
-                iv.discordbot.webhookClient.send(`**${name}** left the guild.`);
+                iv.discordbot.webhookClient.send(`**${name.replace(/([*_~])/g, "\\$1")}** left the guild.`);
             });
         });
     }
