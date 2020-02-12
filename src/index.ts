@@ -1,10 +1,12 @@
 import "source-map-support/register";
 import * as fs from "fs";
+
+export const config = JSON.parse(fs.readFileSync("config.json", "utf8"));
+
 import Api from "./api";
 import Bot from "./mc";
 import DiscordBot from "./discord/discord";
 
-export const config = JSON.parse(fs.readFileSync("config.json", "utf8"));
 const api = new Api(undefined, config.apiKey);
 
 export const mcbot = new Bot(config.username, config.password, api, config.guildId, config.weeklyExperienceRequirement);
