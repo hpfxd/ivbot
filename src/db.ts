@@ -1,7 +1,11 @@
 import { Sequelize, Model, DataTypes } from "sequelize";
 import { config } from "./index";
 
-export const sequelize = new Sequelize(config["databaseUrl"]);
+export const sequelize = new Sequelize(config["databaseUrl"], {
+    dialectOptions: {
+        timezone: config["databaseTimezone"]
+    }
+});
 
 export class User extends Model {
     public id!: number;
