@@ -97,11 +97,11 @@ export default class Api {
         this.apiKey = apiKey;
 
         this.guildCache = new NodeCache({
-            stdTTL: 600 // 10 minutes
+            stdTTL: 3600 // 1 hour
         });
 
         this.playerCache = new NodeCache({
-            stdTTL: 900 // 15 minutes
+            stdTTL: 43200 // 12 hours
         });
     }
 
