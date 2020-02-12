@@ -25,6 +25,7 @@ export default class DiscordBot {
     webhookClient: WebhookClient;
     guildChatLimiter: Bottleneck;
     guild: Discord.Guild;
+    leaderboards: Leaderboards;
 
     constructor(token: string, api: Api, roles: object, owner: string, webhookId: string, webhookToken: string, chatChannel: string) {
         this.token = token;
@@ -85,8 +86,9 @@ export default class DiscordBot {
             // Registers your custom command groups
             .registerGroups([
                 ["verification", "Verification commands"],
-                ["moderation", "Guild moderation tools for Officers."],
-                ["player", "Commands that interact with players."]
+                ["moderation", "Guild moderation tools for Officers"],
+                ["player", "Commands that interact with players"],
+                ["admin", "Admin commands"]
             ])
 
             // Registers all built-in groups, commands, and argument types
@@ -113,7 +115,7 @@ export default class DiscordBot {
             this.log("Logged in as " + this.client.user.tag);
             this.guild = this.client.guilds.find(c => c.name === "InfiniteVoid");
             
-            new Leaderboards(this.api, this.guild.channels.get(iv.config["discord"]["leaderboards"]["channel"]) as Discord.TextChannel);
+            this.leaderboards = new Leaderboards(this.api, this.guild.channels.get(iv.config["discord"]["leaderboards"]["channel"]) as Discord.TextChannel);
         });
 
         this.client.on("message", (msg) => {

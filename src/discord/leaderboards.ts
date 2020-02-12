@@ -24,7 +24,7 @@ class Leaderboard {
         const result: {
             name: string;
             value: number;
-        }[] = this.updater(guild);
+        }[] = await this.updater(guild);
 
         for (const user of result) {
             embed.addField(`**#${result.indexOf(user) + 1}** ${user.name}`, user.value.toLocaleString(), false);
@@ -46,17 +46,19 @@ export default class Leaderboards {
         console.log("Setting up leaderboards");
         this.setupLeaderboards();
 
-        schedule.scheduleJob("0 * * * *", async () => {
-            console.log("Starting leaderboard update job.");
-            const guild = await api.getGuild(config["guildId"]);
+        schedule.scheduleJob("0 * * * *", this.updateLeaderboards);
+    }
 
-            for (const lb of this.leaderboards) {
-                console.log("Updating leaderboard '" + lb.name + "'");
-                await lb.update(guild);
-            }
+    async updateLeaderboards(): Promise<null> {
+        console.log("Starting leaderboard update job.");
+        const guild = await this.api.getGuild(config["guildId"]);
 
-            return null;
-        });
+        for (const lb of this.leaderboards) {
+            console.log("Updating leaderboard '" + lb.name + "'");
+            await lb.update(guild);
+        }
+
+        return null;
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
