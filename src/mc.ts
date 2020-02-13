@@ -124,7 +124,7 @@ export default class Bot {
             this.bot.chatAddPattern(/^(?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16}) joined the guild!$/m, "guild:join");
             this.bot.chatAddPattern(/^(?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16}) has requested to join the Guild!$/m, "guild:requestJoin");
             this.bot.chatAddPattern(/^(?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16}) left the guild!$/m, "guild:leave");
-            this.bot.chatAddPattern(/^(?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16}) was kicked from the guild by (?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16})$/m, "guild:kick");
+            this.bot.chatAddPattern(/^(?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16}) was kicked from the guild by (?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16})$!/m, "guild:kick");
 
             this.bot.on("connect", () => {
                 this.log("Connected");
