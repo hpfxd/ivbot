@@ -54,7 +54,7 @@ export default class Leaderboards {
 
     async updateLeaderboards(): Promise<null> {
         console.log("Starting leaderboard update job.");
-        const guild = await this.api.getGuild(config["guildId"]);
+        const guild = await this.api.getGuild(config["guildId"], false);
 
         for (const lb of this.leaderboards) {
             console.log("Updating leaderboard '" + lb.name + "'");
