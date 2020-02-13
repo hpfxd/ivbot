@@ -110,6 +110,12 @@ export default class Bot {
                 return;
             }
 
+            if (!opts["username"]) {
+                this.log("Invalid username. Trying to connect again in 30s.");
+                setTimeout(() => this.connect(), 30e3); // 30 seconds
+                return;
+            }
+
             console.log(opts);
 
             this.bot = mineflayer.createBot(opts);
@@ -138,7 +144,7 @@ export default class Bot {
                     console.log(e);
                 }
 
-                setTimeout(this.connect, 30e3); // 30 seconds
+                setTimeout(() => this.connect(), 30e3); // 30 seconds
             });
 
             this.bot.on("guild:chat", (name: string, message: string) => {
