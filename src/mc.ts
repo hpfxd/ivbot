@@ -45,19 +45,22 @@ export default class Bot {
                 });
                 if (member.guildRank === "Member") {
                     let xpReq = 0;
+                    let days = 0;
 
                     if (member.joined.getTime() < d.getTime()) {
                         xpReq = expReq;
+                        days = 7;
                     } else if (member.joined.getTime() < d1.getTime()) {
                         xpReq = expReq / 5;
+                        days = 3;
                     }
 
                     if (xpReq !== 0 && member.weeklyExperience < xpReq) {
                         // player does not meet weekly experience requirement, so kick
 
                         this.kickLimiter.schedule(async () => {
-                            this.log(`Kicking player for: Experience Requirement: ${member.weeklyExperience.toLocaleString()}/${xpReq.toLocaleString()} gained in past 7 days.`);
-                            iv.mcbot.bot.chat(`/g kick ${member.id} Experience Requirement: ${member.weeklyExperience.toLocaleString()}/${xpReq.toLocaleString()} gained in past 7 days.`);
+                            this.log(`Kicking player for: Experience Requirement: ${member.weeklyExperience.toLocaleString()}/${xpReq.toLocaleString()} gained in past ${days} days.`);
+                            iv.mcbot.bot.chat(`/g kick ${member.id} Experience Requirement: ${member.weeklyExperience.toLocaleString()}/${xpReq.toLocaleString()} gained in past ${days} days.`);
 
                             const user: db.User = await db.User.findOne({
                                 where: {
@@ -74,8 +77,8 @@ export default class Bot {
                                     if (discordUser) {
                                         await discordUser.removeRole(iv.discordbot.roles["Member"]);
                                     }
-                                // eslint-disable-next-line no-empty
-                                } catch (ignored) {}
+                                    // eslint-disable-next-line no-empty
+                                } catch (ignored) { }
                             }
 
                             return null;
@@ -156,8 +159,11 @@ export default class Bot {
                 if (this.blacklisted.includes(name)) return;
                 const player = await this.api.getPlayer(name);
 
-                this.log(`Accepting ${player.name}. Level: ${player.level}`);
-                this.bot.chat("/guild accept " + player.name);
+                this.log(`Player ${player.name}. Level: ${player.level}`);
+
+                if (player.level >= iv.config["networkLevelRequirement"]) {
+                    this.bot.chat("/guild accept " + player.name);
+                }
             });
 
             this.bot.on("guild:join", (name: string) => {
