@@ -22,7 +22,7 @@ export default class GKickCommand extends Command {
                 {
                     key: "length",
                     prompt: "What is length in days for this entry?",
-                    type: "number",
+                    type: "integer",
                 }
             ]
         });
