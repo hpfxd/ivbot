@@ -33,8 +33,8 @@ export default class GKickCommand extends Command {
 
         const user: db.User = await db.User.findOne({
             where: {
-                discordId: {
-                    [Op.eq]: msg.author.id
+                minecraftName: {
+                    [Op.eq]: player
                 }
             }
         });

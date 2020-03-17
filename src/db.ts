@@ -13,6 +13,7 @@ export class User extends Model {
     public minecraftId!: string;
     public minecraftName!: string;
     public discordId!: string;
+    public noKick!: Date;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -45,6 +46,10 @@ User.init({
     discordId: {
         type: new DataTypes.STRING(18),
         allowNull: false
+    },
+    noKick: {
+        type: new DataTypes.DATE,
+        allowNull: true
     }
 }, {
     tableName: "users",

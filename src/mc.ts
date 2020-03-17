@@ -5,6 +5,7 @@ import Bottleneck from "bottleneck";
 import schedule from "node-schedule";
 import Api from "./api";
 import md5 from "md5";
+import * as fs from "fs";
 
 import * as db from "./db";
 import { Op } from "sequelize";
@@ -14,7 +15,7 @@ export default class Bot {
     password: string;
     bot;
     api: Api;
-    blacklisted: string[] = [];
+    blacklisted: string[] = JSON.parse(fs.readFileSync("blacklist.json", "utf8"));
 
     kickLimiter: Bottleneck;
 
@@ -59,9 +60,7 @@ export default class Bot {
                         // player does not meet weekly experience requirement, so kick
 
                         this.kickLimiter.schedule(async () => {
-                            this.log(`Kicking player for: Experience Requirement: ${member.weeklyExperience.toLocaleString()}/${xpReq.toLocaleString()} gained in past ${days} days.`);
-                            iv.mcbot.bot.chat(`/g kick ${member.id} Experience Requirement: ${member.weeklyExperience.toLocaleString()}/${xpReq.toLocaleString()} gained in past ${days} days.`);
-
+                            let kick = true;
                             const user: db.User = await db.User.findOne({
                                 where: {
                                     minecraftId: {
@@ -71,6 +70,10 @@ export default class Bot {
                             });
 
                             if (user) {
+                                if (user.noKick > new Date()) {
+                                    kick = false;
+                                }
+                                
                                 try {
                                     const discordUser = await iv.discordbot.guild.fetchMember(user.discordId);
 
@@ -79,6 +82,14 @@ export default class Bot {
                                     }
                                     // eslint-disable-next-line no-empty
                                 } catch (ignored) { }
+                            }
+                            
+                            if (kick) {
+                                const msg = `Experience Requirement: ${member.weeklyExperience.toLocaleString()}/${xpReq.toLocaleString()} gained in past ${days} days.`;
+                                this.log(`Kicking player for: ${msg}`);
+                                iv.mcbot.bot.chat(`/g kick ${member.id} ${msg}`);
+                            } else {
+                                this.log("Not kicking " + member.id);
                             }
 
                             return null;
@@ -127,7 +138,7 @@ export default class Bot {
             this.bot.chatAddPattern(/^(?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16}) joined the guild!$/m, "guild:join");
             this.bot.chatAddPattern(/^(?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16}) has requested to join the Guild!$/m, "guild:requestJoin");
             this.bot.chatAddPattern(/^(?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16}) left the guild!$/m, "guild:leave");
-            this.bot.chatAddPattern(/^(?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16}) was kicked from the guild by (?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16})$!/m, "guild:kick");
+            this.bot.chatAddPattern(/^(?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16}) was kicked from the guild by (?:\[[A-Za-z+ ]+\] )?([A-Za-z0-9_]{1,16})!$/m, "guild:kick");
 
             this.bot.on("connect", () => {
                 this.log("Connected");
@@ -176,6 +187,7 @@ export default class Bot {
 
             this.bot.on("guild:kick", (name: string, by: string) => {
                 this.blacklisted.push(name);
+                fs.writeFileSync("blacklisted.json", JSON.stringify(this.blacklisted), "utf8");
                 iv.discordbot.webhookClient.send(`**${name.replace(/([*_~])/g, "\\$1")}** was kicked from the guild by **${by}**`);
             });
 
